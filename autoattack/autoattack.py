@@ -185,6 +185,7 @@ class AutoAttack():
                 
                     output = self.get_logits(adv_curr).max(dim=1)[1]
                     output = output.to(torch.float)
+                    y_adv = y_adv.to(torch.float)
                     false_batch = ~y.eq(output).to(robust_flags.device)
                     non_robust_lin_idcs = batch_datapoint_idcs[false_batch]
                     robust_flags[non_robust_lin_idcs] = False
