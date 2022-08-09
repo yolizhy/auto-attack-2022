@@ -98,7 +98,7 @@ def check_dynamic(model, x, is_tf_model=False, logger=None):
     else:
         msg = None
     sys.settrace(tracefunc)
-    model(x)
+    model.predict(x)
     sys.settrace(None)
     #for k, v in funcs.items():
     #    print(k, v)
