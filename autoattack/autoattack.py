@@ -88,7 +88,7 @@ class AutoAttack():
                 y_orig[:bs].to(self.device), bs=bs, logger=self.logger)
         n_cls = checks.check_range_output(self.get_logits, x_orig[:bs].to(self.device),
             logger=self.logger)
-        checks.check_dynamic(self.model, x_orig[:bs].to(self.device), self.is_tf_model,
+        checks.check_dynamic(self.model, x_orig[:bs].to(self.device), True,
             logger=self.logger)
         checks.check_n_classes(n_cls, self.attacks_to_run, self.apgd_targeted.n_target_classes,
             self.fab.n_target_classes, logger=self.logger)
