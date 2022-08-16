@@ -357,9 +357,8 @@ class SquareAttack():
                         ).to(self.device)
                     new_deltas *= (self.eta(s).view(1, 1, s, s) *
                         self.random_choice([x_curr.shape[0], c, 1, 1]))
-                    print(s)
-                    old_deltas = delta_curr[:, :, vh:(vh + s), vw:(vw + s)] / (
-                        1e-12 + norms_window_1)
+                    print(s,vw,vw + s)
+                    old_deltas = delta_curr[:, :, vh:(vh + s), vw:(vw + s)] / (1e-12 + norms_window_1)
                     print(new_deltas.shape,old_deltas.shape)
                     new_deltas += old_deltas
                     new_deltas = new_deltas / (1e-12 + (new_deltas ** 2).sum(
