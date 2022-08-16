@@ -366,7 +366,8 @@ class SquareAttack():
                         norms_image ** 2, torch.zeros_like(new_deltas)) /
                         c + norms_windows ** 2).sqrt()
                     delta_curr[:, :, vh2:vh2 + s, vw2:vw2 + s] = 0.
-                    delta_curr[:, :, vh:vh + s, vw:vw + s] = new_deltas + 0
+                    print(new_deltas.shape)
+                    delta_curr[:, :, vh:vh + s, vw:vw + s] = new_deltas + 0.
 
                     x_new = torch.clamp(x_curr + self.normalize(delta_curr
                         ) * self.eps, 0. ,1.)
