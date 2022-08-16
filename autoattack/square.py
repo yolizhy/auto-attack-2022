@@ -357,6 +357,7 @@ class SquareAttack():
                         ).to(self.device)
                     new_deltas *= (self.eta(s).view(1, 1, s, s) *
                         self.random_choice([x_curr.shape[0], c, 1, 1]))
+                    print(s)
                     old_deltas = delta_curr[:, :, vh:(vh + s), vw:(vw + s)] / (
                         1e-12 + norms_window_1)
                     print(new_deltas.shape,old_deltas.shape)
@@ -366,6 +367,7 @@ class SquareAttack():
                         (self.eps * torch.ones_like(new_deltas)) ** 2 -
                         norms_image ** 2, torch.zeros_like(new_deltas)) /
                         c + norms_windows ** 2).sqrt()
+                    print(new_deltas.shape)
                     delta_curr[:, :, vh2:vh2 + s, vw2:vw2 + s] = 0.
                     print(vw + s)
                     delta_curr[:, :, vh:(vh + s), vw:(vw + s)] = new_deltas + 0.
