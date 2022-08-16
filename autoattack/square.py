@@ -39,7 +39,7 @@ class SquareAttack():
             norm='Linf',
             n_queries=5000,
             eps=None,
-            p_init=.4,
+            p_init=0.4,
             n_restarts=1,
             seed=0,
             verbose=False,
