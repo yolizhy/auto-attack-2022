@@ -333,7 +333,7 @@ class SquareAttack():
 
                     delta_curr = x_best_curr - x_curr
                     p = self.p_selection(i_iter)
-                    print(p,  n_features, c,h,w)
+                    
                     s = max(int(round(math.sqrt(p * n_features / c))), 3)
                     if s % 2 == 0:
                         s += 1
@@ -359,18 +359,18 @@ class SquareAttack():
                         ).to(self.device)
                     new_deltas *= (self.eta(s).view(1, 1, s, s) *
                         self.random_choice([x_curr.shape[0], c, 1, 1]))
-                    print(s,vw,vw + s,delta_curr.shape)
+                    
                     old_deltas = delta_curr[:, :, vh:(vh + s), vw:(vw + s)] / (1e-12 + norms_window_1)
-                    print(new_deltas.shape,old_deltas.shape)
+                    
                     new_deltas += old_deltas
                     new_deltas = new_deltas / (1e-12 + (new_deltas ** 2).sum(
                         dim=(-2, -1), keepdim=True).sqrt()) * (torch.max(
                         (self.eps * torch.ones_like(new_deltas)) ** 2 -
                         norms_image ** 2, torch.zeros_like(new_deltas)) /
                         c + norms_windows ** 2).sqrt()
-                    print(new_deltas.shape)
+                    
                     delta_curr[:, :, vh2:vh2 + s, vw2:vw2 + s] = 0.
-                    print(vw + s)
+                    
                     delta_curr[:, :, vh:(vh + s), vw:(vw + s)] = new_deltas + 0.
 
                     x_new = torch.clamp(x_curr + self.normalize(delta_curr
