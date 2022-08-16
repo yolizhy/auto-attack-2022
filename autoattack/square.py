@@ -332,6 +332,7 @@ class SquareAttack():
 
                     delta_curr = x_best_curr - x_curr
                     p = self.p_selection(i_iter)
+                    print(p,  n_features, c,h,w)
                     s = max(int(round(math.sqrt(p * n_features / c))), 3)
                     if s % 2 == 0:
                         s += 1
@@ -357,7 +358,7 @@ class SquareAttack():
                         ).to(self.device)
                     new_deltas *= (self.eta(s).view(1, 1, s, s) *
                         self.random_choice([x_curr.shape[0], c, 1, 1]))
-                    print(s,vw,vw + s,norms_window_1,delta_curr.shape)
+                    print(s,vw,vw + s,delta_curr.shape)
                     old_deltas = delta_curr[:, :, vh:(vh + s), vw:(vw + s)] / (1e-12 + norms_window_1)
                     print(new_deltas.shape,old_deltas.shape)
                     new_deltas += old_deltas
