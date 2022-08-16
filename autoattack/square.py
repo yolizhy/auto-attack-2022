@@ -39,7 +39,7 @@ class SquareAttack():
             norm='Linf',
             n_queries=5000,
             eps=None,
-            p_init=.8,
+            p_init=.4,
             n_restarts=1,
             seed=0,
             verbose=False,
@@ -357,7 +357,7 @@ class SquareAttack():
                         ).to(self.device)
                     new_deltas *= (self.eta(s).view(1, 1, s, s) *
                         self.random_choice([x_curr.shape[0], c, 1, 1]))
-                    print(s,vw,vw + s)
+                    print(s,vw,vw + s,norms_window_1,delta_curr.shape)
                     old_deltas = delta_curr[:, :, vh:(vh + s), vw:(vw + s)] / (1e-12 + norms_window_1)
                     print(new_deltas.shape,old_deltas.shape)
                     new_deltas += old_deltas
