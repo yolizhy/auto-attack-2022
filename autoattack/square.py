@@ -336,15 +336,15 @@ class SquareAttack():
                     if s % 2 == 0:
                         s += 1
 
-                    vh = self.random_int(0, h - s)
-                    vw = self.random_int(0, w - s)
+                    vh = self.random_int(0, abs(h - s))
+                    vw = self.random_int(0, abs(w - s))
                     new_deltas_mask = torch.zeros_like(x_curr)
                     new_deltas_mask[:, :, vh:vh + s, vw:vw + s] = 1.0
                     norms_window_1 = (delta_curr[:, :, vh:vh + s, vw:vw + s
                         ] ** 2).sum(dim=(-2, -1), keepdim=True).sqrt()
 
-                    vh2 = self.random_int(0, h - s)
-                    vw2 = self.random_int(0, w - s)
+                    vh2 = self.random_int(0, abs(h - s))
+                    vw2 = self.random_int(0, abs(w - s))
                     new_deltas_mask_2 = torch.zeros_like(x_curr)
                     new_deltas_mask_2[:, :, vh2:vh2 + s, vw2:vw2 + s] = 1.
 
