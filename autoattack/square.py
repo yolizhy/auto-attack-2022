@@ -194,27 +194,28 @@ class SquareAttack():
 
         if self.rescale_schedule:
             it = int(it / self.n_queries * 10000)
-
+         
+        p_init = 0.4
         if 10 < it <= 50:
-            p = self.p_init / 2
+            p = p_init / 2
         elif 50 < it <= 200:
-            p = self.p_init / 4
+            p = p_init / 4
         elif 200 < it <= 500:
-            p = self.p_init / 8
+            p = p_init / 8
         elif 500 < it <= 1000:
-            p = self.p_init / 16
+            p = p_init / 16
         elif 1000 < it <= 2000:
-            p = self.p_init / 32
+            p = p_init / 32
         elif 2000 < it <= 4000:
-            p = self.p_init / 64
+            p = p_init / 64
         elif 4000 < it <= 6000:
-            p = self.p_init / 128
+            p = p_init / 128
         elif 6000 < it <= 8000:
-            p = self.p_init / 256
+            p = p_init / 256
         elif 8000 < it:
-            p = self.p_init / 512
+            p = p_init / 512
         else:
-            p = self.p_init
+            p = p_init
 
         return p
 
