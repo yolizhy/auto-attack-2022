@@ -98,7 +98,8 @@ class AutoAttack():
                 output = self.get_logits(x).max(dim=1)[1]
                 prediction = torch.empty_like(y_orig)
                 for i in range(int(len(y)/20)):
-                    pred = torch.mode(output[20*i:20*i+20])
+                    pred = torch.mode(output[20*i:20*i+20]).values
+                    pred = pred.item()
                     print(pred)
                     prediction[20*i:20*i+20]=pred
                   
