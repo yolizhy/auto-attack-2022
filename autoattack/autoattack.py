@@ -96,8 +96,17 @@ class AutoAttack():
                 x = x_orig[start_idx:end_idx, :].clone().to(self.device)
                 y = y_orig[start_idx:end_idx].clone().to(self.device)
                 output = self.get_logits(x).max(dim=1)[1]
-                y_adv[start_idx: end_idx] = output
-                correct_batch = y.eq(output)
+                prediction = torch.empty_like(y_orig)
+                for i in range(int(len(y)/20)):
+                    pred = torch.mode(output[20*i:20*i+20])
+                    print(pred)
+                    prediction[20*i:20*i+20]=pred
+                  
+                
+                
+                y_adv[start_idx: end_idx] = prediction
+                
+                correct_batch = y.eq(prediction)
                 robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
 
             robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
