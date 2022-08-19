@@ -96,11 +96,11 @@ class AutoAttack():
                 x = x_orig[start_idx:end_idx, :].clone().to(self.device)
                 y = y_orig[start_idx:end_idx].clone().to(self.device)
                 output = self.get_logits(x).max(dim=1)[1]
-                prediction = torch.empty_like(y_orig)
-                for i in range(int(len(y)/20)):
+                prediction = torch.empty_like(y)
+                for i in range(int((end_idx-start_idx)/20)):
                     pred = torch.mode(output[20*i:20*i+20]).values
                     pred = pred.item()
-                    print(pred)
+                    #print(pred)
                     prediction[20*i:20*i+20]=pred
                   
                 
