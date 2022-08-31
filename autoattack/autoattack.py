@@ -24,7 +24,7 @@ class AutoAttack():
         self.device = device
         self.logger = Logger(log_path)
 
-        if version in ['standard', 'plus', 'rand'] and attacks_to_run != []:
+        if version in ['standard', 'plus', 'two','rand'] and attacks_to_run != []:
             raise ValueError("attacks_to_run will be overridden unless you use version='custom'")
         
         if not self.is_tf_model:
@@ -65,7 +65,7 @@ class AutoAttack():
                 eps=self.epsilon, norm=self.norm, eot_iter=1, rho=.75, seed=self.seed, device=self.device,
                 is_tf_model=True, logger=self.logger)
     
-        if version in ['standard', 'plus', 'rand']:
+        if version in ['standard', 'plus', 'two','rand']:
             self.set_version(version)
         
     def get_logits(self, x):
