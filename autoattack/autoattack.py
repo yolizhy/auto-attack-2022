@@ -82,10 +82,20 @@ class AutoAttack():
             print('using {} version including {}'.format(self.version,
                 ', '.join(self.attacks_to_run)))
         
+        if self.version != 'rand':
+            checks.check_randomized(self.get_logits, x_orig[:bs].to(self.device),
+                y_orig[:bs].to(self.device), bs=bs, logger=self.logger)
+        n_cls = checks.check_range_output(self.get_logits, x_orig[:bs].to(self.device),
+            logger=self.logger)
+        checks.check_dynamic(self.model, x_orig[:bs].to(self.device), self.is_tf_model,
+            logger=self.logger)
+        checks.check_n_classes(n_cls, self.attacks_to_run, self.apgd_targeted.n_target_classes,
+            self.fab.n_target_classes, logger=self.logger)
         
         
         with torch.no_grad():
             # calculate accuracy
+            
             n_batches = int(np.ceil(x_orig.shape[0] / bs))
             robust_flags = torch.zeros(x_orig.shape[0], dtype=torch.bool, device=x_orig.device)
             y_adv = torch.empty_like(y_orig)
@@ -96,7 +106,24 @@ class AutoAttack():
                 x = x_orig[start_idx:end_idx, :].clone().to(self.device)
                 y = y_orig[start_idx:end_idx].clone().to(self.device)
                 output = self.get_logits(x).max(dim=1)[1]
-                '''
+                y_adv[start_idx: end_idx] = output
+                correct_batch = y.eq(output)
+                robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
+
+            robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
+            robust_accuracy_dict = {'clean': robust_accuracy}
+            '''
+            n_batches = int(np.ceil(x_orig.shape[0] / bs))
+            robust_flags = torch.zeros(x_orig.shape[0], dtype=torch.bool, device=x_orig.device)
+            y_adv = torch.empty_like(y_orig)
+            for batch_idx in range(n_batches):
+                start_idx = batch_idx * bs
+                end_idx = min( (batch_idx + 1) * bs, x_orig.shape[0])
+
+                x = x_orig[start_idx:end_idx, :].clone().to(self.device)
+                y = y_orig[start_idx:end_idx].clone().to(self.device)
+                output = self.get_logits(x).max(dim=1)[1]
+                
                 prediction = torch.empty_like(y)
                 
                 for i in range(int((end_idx-start_idx)/20)):
@@ -107,15 +134,15 @@ class AutoAttack():
                 
                 y_adv[start_idx: end_idx] = prediction
                 correct_batch = y.eq(prediction)
-                '''
+               
                 y_adv[start_idx: end_idx] = output
                 correct_batch = y.eq(output)
                 
                 robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
-
+                
             robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
             robust_accuracy_dict = {'clean': robust_accuracy}
-            
+            '''
             if self.verbose:
                 self.logger.log('initial accuracy: {:.2%}'.format(robust_accuracy))
                     
