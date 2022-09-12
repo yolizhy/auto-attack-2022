@@ -96,9 +96,9 @@ class AutoAttack():
                 y = y_orig[start_idx:end_idx].clone().to(self.device)
                 output = self.get_logits(x).max(dim=1)[1]
                 y_adv[start_idx: end_idx] = output
-                
+                print(y[start_idx: end_idx],output)
                 correct_batch = y.eq(output)
-                print(correct_batch)
+                #print(correct_batch)
                 robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
             
             robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
