@@ -77,7 +77,7 @@ class AutoAttack():
     def get_seed(self):
         return time.time() if self.seed is None else self.seed
     
-    def run_standard_evaluation(self, x_orig, y_orig, bs=250, return_labels=False,ds):
+    def run_standard_evaluation(self, x_orig, y_orig, bs=250, return_labels=False,ds='esc'):
         if self.verbose:
             print('using {} version including {}'.format(self.version,
                 ', '.join(self.attacks_to_run)))
