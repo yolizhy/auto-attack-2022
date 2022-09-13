@@ -77,64 +77,64 @@ class AutoAttack():
     def get_seed(self):
         return time.time() if self.seed is None else self.seed
     
-    def run_standard_evaluation(self, x_orig, y_orig, bs=250, return_labels=False):
+    def run_standard_evaluation(self, x_orig, y_orig, bs=250, return_labels=False,ds):
         if self.verbose:
             print('using {} version including {}'.format(self.version,
                 ', '.join(self.attacks_to_run)))
         
         with torch.no_grad():
             # calculate accuracy
-            
-            n_batches = int(np.ceil(x_orig.shape[0] / bs))
-            robust_flags = torch.zeros(x_orig.shape[0], dtype=torch.bool, device=x_orig.device)
-            y_adv = torch.empty_like(y_orig)
-            for batch_idx in range(n_batches):
-                start_idx = batch_idx * bs
-                end_idx = min( (batch_idx + 1) * bs, x_orig.shape[0])
+            if ds='esc':
+                n_batches = int(np.ceil(x_orig.shape[0] / bs))
+                robust_flags = torch.zeros(x_orig.shape[0], dtype=torch.bool, device=x_orig.device)
+                y_adv = torch.empty_like(y_orig)
+                for batch_idx in range(n_batches):
+                    start_idx = batch_idx * bs
+                    end_idx = min( (batch_idx + 1) * bs, x_orig.shape[0])
 
-                x = x_orig[start_idx:end_idx, :].clone().to(self.device)
-                y = y_orig[start_idx:end_idx].clone().to(self.device)
-                output = self.get_logits(x).max(dim=1)[1]
-                print(self.get_logits(x))
-                y_adv[start_idx: end_idx] = output
-                print(output)
-                correct_batch = y.eq(output)
-                #print(correct_batch)
-                robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
-            
-            robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
-            robust_accuracy_dict = {'clean': robust_accuracy}
-            '''
-            n_batches = int(np.ceil(x_orig.shape[0] / bs))
-            robust_flags = torch.zeros(x_orig.shape[0], dtype=torch.bool, device=x_orig.device)
-            y_adv = torch.empty_like(y_orig)
-            for batch_idx in range(n_batches):
-                start_idx = batch_idx * bs
-                end_idx = min( (batch_idx + 1) * bs, x_orig.shape[0])
+                    x = x_orig[start_idx:end_idx, :].clone().to(self.device)
+                    y = y_orig[start_idx:end_idx].clone().to(self.device)
+                    output = self.get_logits(x).max(dim=1)[1]
 
-                x = x_orig[start_idx:end_idx, :].clone().to(self.device)
-                y = y_orig[start_idx:end_idx].clone().to(self.device)
-                output = self.get_logits(x).max(dim=1)[1]
-                
-                prediction = torch.empty_like(y)
-                
-                for i in range(int((end_idx-start_idx)/20)):
-                    pred = torch.mode(output[20*i:20*i+20]).values
-                    pred = pred.item()
-                    #print(pred)
-                    prediction[20*i:20*i+20]=pred
-                
-                y_adv[start_idx: end_idx] = prediction
-                correct_batch = y.eq(prediction)
-               
-                y_adv[start_idx: end_idx] = output
-                correct_batch = y.eq(output)
-                
-                robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
-                
-            robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
-            robust_accuracy_dict = {'clean': robust_accuracy}
-            '''
+                    prediction = torch.empty_like(y)
+
+                    for i in range(int((end_idx-start_idx)/20)):
+                        pred = torch.mode(output[20*i:20*i+20]).values
+                        pred = pred.item()
+                        #print(pred)
+                        prediction[20*i:20*i+20]=pred
+
+                    y_adv[start_idx: end_idx] = prediction
+                    correct_batch = y.eq(prediction)
+
+                    y_adv[start_idx: end_idx] = output
+                    correct_batch = y.eq(output)
+
+                    robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
+
+                robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
+                robust_accuracy_dict = {'clean': robust_accuracy}
+            else:
+                n_batches = int(np.ceil(x_orig.shape[0] / bs))
+                robust_flags = torch.zeros(x_orig.shape[0], dtype=torch.bool, device=x_orig.device)
+                y_adv = torch.empty_like(y_orig)
+                for batch_idx in range(n_batches):
+                    start_idx = batch_idx * bs
+                    end_idx = min( (batch_idx + 1) * bs, x_orig.shape[0])
+
+                    x = x_orig[start_idx:end_idx, :].clone().to(self.device)
+                    y = y_orig[start_idx:end_idx].clone().to(self.device)
+                    output = self.get_logits(x).max(dim=1)[1]
+                    print(self.get_logits(x))
+                    y_adv[start_idx: end_idx] = output
+                    print(output)
+                    correct_batch = y.eq(output)
+                    #print(correct_batch)
+                    robust_flags[start_idx:end_idx] = correct_batch.detach().to(robust_flags.device)
+
+                robust_accuracy = torch.sum(robust_flags).item() / x_orig.shape[0]
+                robust_accuracy_dict = {'clean': robust_accuracy}
+
             if self.verbose:
                 self.logger.log('initial accuracy: {:.2%}'.format(robust_accuracy))
                     
