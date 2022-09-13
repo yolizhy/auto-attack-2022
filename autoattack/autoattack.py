@@ -84,7 +84,7 @@ class AutoAttack():
         
         with torch.no_grad():
             # calculate accuracy
-            if ds='esc':
+            if ds=='esc':
                 n_batches = int(np.ceil(x_orig.shape[0] / bs))
                 robust_flags = torch.zeros(x_orig.shape[0], dtype=torch.bool, device=x_orig.device)
                 y_adv = torch.empty_like(y_orig)
